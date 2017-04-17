@@ -1,0 +1,15 @@
+{
+    "compilerOptions": {
+        "module": "commonjs",
+        "alwaysStrict": true,
+        "declaration": true,
+        "experimentalDecorators": true,
+        "inlineSourceMap": true,
+        "target": "es5",
+        "forceConsistentCasingInFileNames": true,
+        "outDir": "output/build"
+    },
+    "include": [
+        "src/**/*"
+    ]
+}

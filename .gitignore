@@ -1,0 +1,20 @@
+# Logs
+logs
+*.log
+npm-debug.log*
+
+# Dependencies
+node_modules/
+
+# output
+output/
+
+# VS Code
+.vscode
+!.vscode/tasks.js
+
+# Optional npm cache directory
+.npm
+
+# Optional eslint cache
+.eslintcache
