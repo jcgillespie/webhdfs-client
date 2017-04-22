@@ -1,4 +1,4 @@
-import { ClientOptions, DefaultClientOptions } from './ClientOptions';
+import { ClientOptions } from './ClientOptions';
 
 export interface WebHDFSClient {
     readonly Options: ClientOptions;

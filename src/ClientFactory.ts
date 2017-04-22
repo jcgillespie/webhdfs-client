@@ -1,18 +1,11 @@
 import { ClientOptions, DefaultClientOptions } from './ClientOptions';
 import { WebHDFSClient } from './WebHDFSClient';
 
-export class ClientFactory {
-    public static DefaultClientOptions: ClientOptions;
-
-    public static Create(options?: ClientOptions): WebHDFSClient {
-        const opts: ClientOptions = { ...DefaultClientOptions, ...options };
-        return new Client(opts);
-    }
-}
-
 class Client implements WebHDFSClient {
     public readonly BaseUri: string = undefined;
-    constructor(public Options: ClientOptions) {
+    public readonly Options: ClientOptions;
+    constructor(opts?: ClientOptions) {
+        this.Options = { ...DefaultClientOptions, ...opts };
         this.BaseUri = this.createBaseUri();
     }
 
@@ -29,5 +22,14 @@ class Client implements WebHDFSClient {
         const uri = `${this.Options.Protocol}://${this.Options.Host}:${this.Options.Port}/${this.Options.Path}`;
 
         return uri;
+    }
+}
+
+export class ClientFactory {
+    public static DefaultClientOptions: ClientOptions;
+
+    public static Create(options?: ClientOptions): WebHDFSClient {
+        const opts: ClientOptions = { ...DefaultClientOptions, ...options };
+        return new Client(opts);
     }
 }
