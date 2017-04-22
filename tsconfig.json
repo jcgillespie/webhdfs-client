@@ -10,6 +10,6 @@
         "outDir": "output/build"
     },
     "include": [
-        "src/**/*"
+        "src/**/*.ts"
     ]
 }
