@@ -5,11 +5,17 @@
         "declaration": true,
         "experimentalDecorators": true,
         "inlineSourceMap": true,
-        "target": "es5",
+        "target": "es2016",
         "forceConsistentCasingInFileNames": true,
         "outDir": "../output/build",
         "allowUnusedLabels": false,
-        "noImplicitReturns": true
+        "noImplicitReturns": true,
+        "noImplicitThis": true,
+        "emitDecoratorMetadata": true,
+        "noImplicitAny": true,
+        "noUnusedLocals": true,
+        "noUnusedParameters": true,
+        "strictNullChecks": true
     },
     "include": [
         "../src/**/*.ts"

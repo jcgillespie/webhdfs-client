@@ -4,8 +4,8 @@
   "description": "A WebHDFS client library with Promise support. Written in TypeScript.",
   "main": "/dist/index.js",
   "scripts": {
-    "pretest": "npm run lint",
-    "test": "jest --coverage --config ./config/jest.json",
+    "pretest": "yarn run build && yarn run lint",
+    "test": "jest --coverage --no-cache --config ./config/jest.json",
     "test:nocover": "jest --config ./config/jest.json",
     "test:watch": "jest --watch --config ./config/jest.json",
     "build": "tsc -p ./config/tsconfig.json --pretty",
@@ -24,7 +24,6 @@
     "@types/bluebird": "^3.5.2",
     "@types/jest": "^19.2.2",
     "@types/request": "0.0.42",
-    "@types/request-promise": "^4.1.33",
     "jest": "^19.0.2",
     "ts-jest": "^19.0.10",
     "tslint": "^5.1.0",
@@ -32,7 +31,6 @@
   },
   "dependencies": {
     "bluebird": "^3.5.0",
-    "request": "^2.81.0",
-    "request-promise": "^4.2.0"
+    "request": "^2.81.0"
   }
 }

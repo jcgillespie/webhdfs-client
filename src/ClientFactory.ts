@@ -1,12 +1,17 @@
 import { ClientOptions, DefaultClientOptions } from './ClientOptions';
 import { WebHDFSClient } from './WebHDFSClient';
+import { FileStatusProperties } from './WebHDFSTypes';
 
 class Client implements WebHDFSClient {
-    public readonly BaseUri: string = undefined;
+    public readonly BaseUri: string;
     public readonly Options: ClientOptions;
     constructor(opts?: ClientOptions) {
         this.Options = { ...DefaultClientOptions, ...opts };
         this.BaseUri = this.createBaseUri();
+    }
+
+    public ListStatus(path: string): Promise<FileStatusProperties[]> {
+        throw new Error('Method not implemented.');
     }
 
     private createBaseUri(): string {
@@ -19,6 +24,7 @@ class Client implements WebHDFSClient {
                 this.Options.Path = this.Options.Path.substring(1);
             }
         }
+
         const uri = `${this.Options.Protocol}://${this.Options.Host}:${this.Options.Port}/${this.Options.Path}`;
 
         return uri;

@@ -2,14 +2,6 @@ import { ClientFactory } from './ClientFactory';
 import { WebHDFSClient } from './WebHDFSClient';
 import { ClientOptions, DefaultClientOptions } from './ClientOptions';
 
-
-describe('Client', () => {
-    it('can be constructed', () => {
-        let sut = ClientFactory.Create();
-        expect(sut).toBeDefined();
-    });
-});
-
 describe('Client factory', () => {
     it('should use the default options if none are supplied', () => {
         const client: WebHDFSClient = ClientFactory.Create();
@@ -22,11 +14,11 @@ describe('Client factory', () => {
             Port: 1234
         };
         const client: WebHDFSClient = ClientFactory.Create(opts);
-        expect(client.Options.Port).toEqual(opts.Port);
         expect(client.Options.Host).toEqual(DefaultClientOptions.Host);
-        expect(client.Options.User).toEqual(DefaultClientOptions.User);
         expect(client.Options.Path).toEqual(DefaultClientOptions.Path);
+        expect(client.Options.Port).toEqual(opts.Port);
         expect(client.Options.Protocol).toEqual(DefaultClientOptions.Protocol);
+        expect(client.Options.User).toEqual(DefaultClientOptions.User);
     });
 
     it('should take supplied values over the defaults', () => {
@@ -38,11 +30,11 @@ describe('Client factory', () => {
             User: 'unit tester'
         };
         const client: WebHDFSClient = ClientFactory.Create(opts);
-        expect(client.Options.Port).toEqual(opts.Port);
         expect(client.Options.Host).toEqual(opts.Host);
-        expect(client.Options.User).toEqual(opts.User);
         expect(client.Options.Path).toEqual(opts.Path);
+        expect(client.Options.Port).toEqual(opts.Port);
         expect(client.Options.Protocol).toEqual(opts.Protocol);
+        expect(client.Options.User).toEqual(opts.User);
     });
 
     it('should allow user to remove defaults', () => {
@@ -54,16 +46,16 @@ describe('Client factory', () => {
             User: undefined
         };
         const client: WebHDFSClient = ClientFactory.Create(opts);
-        expect(client.Options.Port).toBeUndefined();
         expect(client.Options.Host).toBeUndefined();
-        expect(client.Options.User).toBeUndefined();
         expect(client.Options.Path).toBeUndefined();
+        expect(client.Options.Port).toBeUndefined();
         expect(client.Options.Protocol).toBeUndefined();
+        expect(client.Options.User).toBeUndefined();
     });
 
     it('should allow user to supply only the Host value', () => {
         const opts: ClientOptions = {
-            Host: 'unittest.com'
+            Host: 'unit-test.org'
         };
         const client: WebHDFSClient = ClientFactory.Create(opts);
         expect(client.Options.Host).toEqual(opts.Host);
@@ -71,7 +63,7 @@ describe('Client factory', () => {
 
     it('should allow user to supply only the Path value', () => {
         const opts: ClientOptions = {
-            Path: 'unit/test/'
+            Path: 'unit/test/path/'
         };
         const client: WebHDFSClient = ClientFactory.Create(opts);
         expect(client.Options.Path).toEqual(opts.Path);
@@ -79,7 +71,7 @@ describe('Client factory', () => {
 
     it('should allow user to supply only the user value', () => {
         const opts: ClientOptions = {
-            User: 'Mr. Rogers'
+            User: 'SuperAdminUser'
         };
         const client: WebHDFSClient = ClientFactory.Create(opts);
         expect(client.Options.User).toEqual(opts.User);
@@ -87,7 +79,7 @@ describe('Client factory', () => {
 
     it('should allow user to supply only the Protocol value', () => {
         const opts: ClientOptions = {
-            Protocol: 'spdy'
+            Protocol: 'webhdfs'
         };
         const client: WebHDFSClient = ClientFactory.Create(opts);
         expect(client.Options.Protocol).toEqual(opts.Protocol);
@@ -95,7 +87,7 @@ describe('Client factory', () => {
 
     it('should enforce a trailing slash on the base URI', () => {
         const opts: ClientOptions = {
-            Path: '/unit/test/trailing/slash'
+            Path: '/test/trailing/slash'
         };
         const client = ClientFactory.Create(opts) as WebHDFSClient;
         let result = client.BaseUri;
@@ -104,7 +96,7 @@ describe('Client factory', () => {
 
     it('should remove a leading slash from the Path', () => {
         const opts: ClientOptions = {
-            Path: '/unit/test/trailing/slash'
+            Path: '/test/leading/slash'
         };
         const client = ClientFactory.Create(opts) as WebHDFSClient;
         let result = client.BaseUri;
