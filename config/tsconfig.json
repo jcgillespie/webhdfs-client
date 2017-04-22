@@ -7,11 +7,11 @@
         "inlineSourceMap": true,
         "target": "es5",
         "forceConsistentCasingInFileNames": true,
-        "outDir": "output/build",
+        "outDir": "../output/build",
         "allowUnusedLabels": false,
         "noImplicitReturns": true
     },
     "include": [
-        "src/**/*.ts"
+        "../src/**/*.ts"
     ]
 }

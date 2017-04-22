@@ -2,14 +2,13 @@
     "extends": "./tsconfig.json",
     "compilerOptions": {
         "sourceMap": false,
-        "rootDir": ".",
-        "outDir": "output/dist",
+        "outDir": "../output/dist",
         "removeComments": true
     },
     "include": [
-        "src/**/*.ts"
+        "../src/**/*.ts"
     ],
     "exclude": [
-        "src/**/*.spec.ts"
+        "../src/**/*.spec.ts"
     ]
 }

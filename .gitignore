@@ -10,8 +10,7 @@ node_modules/
 output/
 
 # VS Code
-.vscode
-!.vscode/tasks.js
+.vscode/
 
 # Optional npm cache directory
 .npm
