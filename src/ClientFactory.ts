@@ -1,4 +1,4 @@
-import { ClientOptions, DefaultClientOptions } from './clientOptions';
+import { ClientOptions, DefaultClientOptions } from './ClientOptions';
 import { WebHDFSClient } from './WebHDFSClient';
 
 export class ClientFactory {

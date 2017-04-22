@@ -1,6 +1,6 @@
 import { ClientFactory } from './ClientFactory';
 import { WebHDFSClient } from './WebHDFSClient';
-import { ClientOptions, DefaultClientOptions } from './clientOptions';
+import { ClientOptions, DefaultClientOptions } from './ClientOptions';
 
 
 describe('Client', () => {
