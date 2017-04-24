@@ -1,9 +1,7 @@
-import { ClientOptions } from './ClientOptions';
-import { FileStatusProperties } from './WebHDFSTypes';
+import { FileStatusProperties, ContentSummary } from './WebHDFSTypes';
+import { Result } from './Result';
 
 export interface WebHDFSClient {
-    readonly Options: ClientOptions;
-    readonly BaseUri: string;
-
-    ListStatus(path: string): Promise<FileStatusProperties[]>;
+    ListStatus(path: string): Promise<Result<FileStatusProperties[]>>;
+    GetContentSummary(path: string): Promise<Result<ContentSummary>>;
 }
