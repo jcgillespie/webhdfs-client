@@ -1,7 +1,7 @@
 import { ClientOptions, DefaultClientOptions } from './ClientOptions';
 import { RequestFactory, IRequestFactory } from './RequestFactory';
 
-describe('Client factory', () => {
+describe('Request factory', () => {
     it('should use the default options if none are supplied', () => {
         const factory: IRequestFactory = new RequestFactory();
         expect(factory.Options).toBeDefined();

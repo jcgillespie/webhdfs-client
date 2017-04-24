@@ -1,6 +1,7 @@
-import * as r from 'request';
-import * as rp from 'request-promise-native';
-import * as qs from 'qs';
+import * as stream from 'stream';
+import { CoreOptions, get as getRequest } from 'request';
+import { get } from 'request-promise-native';
+import { stringify } from 'qs';
 import { ClientOptions, DefaultClientOptions } from './ClientOptions';
 
 export interface IRequestFactory {
@@ -8,7 +9,9 @@ export interface IRequestFactory {
     readonly BaseParameters: {};
     readonly Options: ClientOptions;
     BuildRequestUri(path?: string, params?: {}): string;
-    Get<TReturn>(op: string, path?: string): Promise<TReturn>;
+    Get<TReturn>(reqParams: {}, config: CoreOptions, path?: string): Promise<TReturn>;
+    GetOp<TReturn>(op: string, path?: string): Promise<TReturn>;
+    GetStream(reqParams: {}, config: CoreOptions, path: string): stream.Stream;
 }
 
 
@@ -48,14 +51,23 @@ export class RequestFactory implements IRequestFactory {
 
         params = params || {};
         let reqparams: {} = { ...this.BaseParameters, ...params };
-        let uri = `${this.BaseUri}${path}?${qs.stringify(reqparams)}`;
+        let uri = `${this.BaseUri}${path}?${stringify(reqparams)}`;
         return uri;
     }
 
-    public async Get<TReturn>(op: string, path?: string): Promise<TReturn> {
+    public async Get<TReturn>(reqParams: {}, config: CoreOptions, path?: string): Promise<TReturn> {
+        let uri: string = this.BuildRequestUri(path, reqParams);
+        return get(uri, config);
+    }
+
+    public async GetOp<TReturn>(op: string, path?: string): Promise<TReturn> {
         let params: {} = { op: op };
-        let uri: string = this.BuildRequestUri(path, params);
-        let config: r.CoreOptions = { json: true };
-        return rp.get(uri, config);
+        let config: CoreOptions = { json: true };
+        return this.Get<TReturn>(params, config, path);
+    }
+
+    public GetStream(reqParams: {}, config: CoreOptions, path: string): stream.Stream {
+        let uri: string = this.BuildRequestUri(path, reqParams);
+        return getRequest(uri, config);
     }
 }
