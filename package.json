@@ -5,17 +5,13 @@
   "main": "/dist/index.js",
   "scripts": {
     "clean": "rimraf ./output/",
-
-    "pretest": "yarn run build",
+    "pretest": "yarn run clean && yarn run lint && yarn run build",
     "test": "jest --coverage --no-cache --config ./config/jest.json",
     "test:nocover": "jest --config ./config/jest.json",
     "test:watch": "jest --watch --config ./config/jest.json",
-    
-    "prebuild": "yarn run clean && yarn run lint",
     "build": "tsc -p ./config/tsconfig.json --pretty",
     "build:debug": "tsc -p ./config/tsconfig.debug.json --pretty",
     "build:prod": "tsc -p ./config/tsconfig.release.json --pretty",
-    
     "lint": "tslint -t stylish -c ./config/tslint.json --type-check -p ./config/tsconfig.json"
   },
   "keywords": [
