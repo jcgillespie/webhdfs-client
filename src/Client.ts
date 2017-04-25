@@ -1,14 +1,66 @@
 import * as stream from 'stream';
-import { CoreOptions } from 'request';
+import { CoreOptions, RequestResponse } from 'request';
+import { RequestPromiseOptions, put } from 'request-promise-native';
 import { IRequestFactory } from './RequestFactory';
-import { WebHDFSClient } from './WebHDFSClient';
-import { FileStatusProperties, ContentSummary, Token, FileChecksum } from './WebHDFSTypes';
-import { Result } from './Result';
+import { WebHDFSClient, CreateFileOptions, OpenFileOptions } from './WebHDFSClient';
+import { FileStatusProperties, ContentSummary, Token, FileChecksum, BooleanResponse } from './WebHDFSTypes';
+import { Result, Outcome } from './Result';
 
 export class Client implements WebHDFSClient {
     private readonly req: IRequestFactory;
     constructor(requestFactory: IRequestFactory) {
         this.req = requestFactory;
+    }
+
+    public async CreateFile(
+        file: stream.Stream,
+        path: string,
+        options?: CreateFileOptions
+    ): Promise<Result<string>> {
+        const op: string = 'CREATE';
+        const locHeader: string = 'location';
+
+        options = options || {};
+        let parameters: {} = {
+            blocksize: options.BlockSize,
+            buffersize: options.BufferSize,
+            overwrite: options.Overwrite,
+            permission: options.PermissionOctal,
+            replication: options.Replication,
+            op: op,
+            noredirect: true
+        };
+
+        let requestOpts: RequestPromiseOptions = {
+            followRedirect: false,
+            followAllRedirects: false,
+            resolveWithFullResponse: true,
+            simple: false
+        };
+
+        let success: boolean = false;
+        let location: string = '';
+        try {
+            // two-part creation per docs
+            // reference: https://hadoop.apache.org/docs/current/hadoop-project-dist/hadoop-hdfs/WebHDFS.html#Create_and_Write_to_a_File
+            let uri = this.req.BuildRequestUri(path, parameters);
+            let req1: RequestResponse = await put(uri, requestOpts);
+            let dataUri = req1.headers[locHeader];
+
+            let req2 = put(dataUri, requestOpts);
+            file.pipe(req2);
+
+            let response: RequestResponse = await req2;
+            location = response.headers[locHeader];
+            success = location !== null;
+        } catch (error) {
+            success = false;
+        }
+
+        let result = new Result<string>();
+        result.Success = success;
+        result.Result = result.Success ? location : undefined;
+        return result;
     }
 
     public async GetContentSummary(path: string): Promise<Result<ContentSummary>> {
@@ -75,33 +127,44 @@ export class Client implements WebHDFSClient {
         return this.createResult<ListStatusResponse, FileStatusProperties[]>(raw, r => r.FileStatuses.FileStatus);
     }
 
+    public async MakeDirectory(path: string, permissionOctal?: string): Promise<Outcome> {
+        const op: string = 'MKDIRS';
+        let reqParams = { op, permission: permissionOctal };
+        let config: CoreOptions = { json: true };
+        let raw = await this.req.Put<BooleanResponse>(reqParams, config, path);
+        return this.createOutcome<BooleanResponse>(raw, r => r.boolean);
+    }
+
     public OpenFile(
         path: string,
-        offset?: number,
-        length?: number,
-        bufferSize?: number,
-        noRedirect?: boolean
+        options?: OpenFileOptions
     ): stream.Stream {
+        options = options || {};
         let param: {} = {
             op: 'OPEN',
-            buffersize: bufferSize,
-            length: length,
-            noredirect: noRedirect,
-            offset: offset
+            buffersize: options.BufferSize,
+            length: options.Length,
+            offset: options.Offset,
         };
 
-        let options: CoreOptions = {
+        let coreOptions: CoreOptions = {
             followRedirect: true
         };
 
-        return this.req.GetStream(param, options, path);
+        return this.req.GetStream(param, coreOptions, path);
     }
 
     private createResult<TRaw, TOut>(raw: TRaw, selector: (input: TRaw) => TOut): Result<TOut> {
-        let result: Result<TOut> = {} as Result<TOut>;
+        let result: Result<TOut> = new Result<TOut>();
         let selection = selector(raw);
-        result.Valid = raw !== undefined && selection !== undefined;
+        result.Success = raw !== undefined && selection !== undefined;
         result.Result = selection;
+        return result;
+    }
+
+    private createOutcome<TRaw>(raw: TRaw, isValid: (input: TRaw) => boolean): Outcome {
+        let result: Outcome = new Outcome();
+        result.Success = isValid(raw);
         return result;
     }
 }

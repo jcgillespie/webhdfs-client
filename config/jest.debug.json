@@ -1,6 +1,6 @@
 {
   "globals": {
-    "__TS_CONFIG__": "<rootDir>/config/tsconfig.json"
+    "__TS_CONFIG__": "<rootDir>/config/tsconfig.debug.json"
   },
   "transform": {
     ".(ts|tsx)": "<rootDir>/node_modules/ts-jest/preprocessor.js"

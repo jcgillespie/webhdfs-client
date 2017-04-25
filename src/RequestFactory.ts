@@ -1,6 +1,6 @@
 import * as stream from 'stream';
 import { CoreOptions, get as getRequest } from 'request';
-import { get } from 'request-promise-native';
+import { get, put } from 'request-promise-native';
 import { stringify } from 'qs';
 import { ClientOptions, DefaultClientOptions } from './ClientOptions';
 
@@ -12,6 +12,7 @@ export interface IRequestFactory {
     Get<TReturn>(reqParams: {}, config: CoreOptions, path?: string): Promise<TReturn>;
     GetOp<TReturn>(op: string, path?: string): Promise<TReturn>;
     GetStream(reqParams: {}, config: CoreOptions, path: string): stream.Stream;
+    Put<TReturn>(reqParams: {}, config: CoreOptions, path?: string): Promise<TReturn>;
 }
 
 
@@ -69,5 +70,10 @@ export class RequestFactory implements IRequestFactory {
     public GetStream(reqParams: {}, config: CoreOptions, path: string): stream.Stream {
         let uri: string = this.BuildRequestUri(path, reqParams);
         return getRequest(uri, config);
+    }
+
+    public async Put<TReturn>(reqParams: {}, config: CoreOptions, path?: string): Promise<TReturn> {
+        let uri: string = this.BuildRequestUri(path, reqParams);
+        return put(uri, config);
     }
 }

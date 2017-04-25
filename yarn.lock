@@ -33,6 +33,12 @@
     "@types/form-data" "*"
     "@types/node" "*"
 
+"@types/stream-buffers@^3.0.2":
+  version "3.0.2"
+  resolved "https://registry.yarnpkg.com/@types/stream-buffers/-/stream-buffers-3.0.2.tgz#b73bfcceae39ecb259750b44ef38a36cfc20e370"
+  dependencies:
+    "@types/node" "*"
+
 abab@^1.0.3:
   version "1.0.3"
   resolved "https://registry.yarnpkg.com/abab/-/abab-1.0.3.tgz#b81de5f7274ec4e756d797cd834f303642724e5d"
@@ -2161,6 +2167,10 @@ sshpk@^1.7.0:
 stealthy-require@^1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/stealthy-require/-/stealthy-require-1.0.0.tgz#1a8ed8fc19a8b56268f76f5a1a3e3832b0c26200"
+
+stream-buffers@^3.0.1:
+  version "3.0.1"
+  resolved "https://registry.yarnpkg.com/stream-buffers/-/stream-buffers-3.0.1.tgz#68a38c5faadeded79ff79988d368e3fb1325ef06"
 
 string-length@^1.0.1:
   version "1.0.1"

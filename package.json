@@ -4,13 +4,18 @@
   "description": "A WebHDFS client library with Promise support. Written in TypeScript.",
   "main": "/dist/index.js",
   "scripts": {
-    "pretest": "yarn run build && yarn run lint",
+    "clean": "rimraf ./output/",
+
+    "pretest": "yarn run build",
     "test": "jest --coverage --no-cache --config ./config/jest.json",
     "test:nocover": "jest --config ./config/jest.json",
     "test:watch": "jest --watch --config ./config/jest.json",
-    "prebuild": "rimraf ./output",
+    
+    "prebuild": "yarn run clean && yarn run lint",
     "build": "tsc -p ./config/tsconfig.json --pretty",
+    "build:debug": "tsc -p ./config/tsconfig.debug.json --pretty",
     "build:prod": "tsc -p ./config/tsconfig.release.json --pretty",
+    
     "lint": "tslint -t stylish -c ./config/tslint.json --type-check -p ./config/tsconfig.json"
   },
   "keywords": [
@@ -26,9 +31,11 @@
     "@types/qs": "^6.2.31",
     "@types/request": "0.0.42",
     "@types/request-promise-native": "^1.0.2",
+    "@types/stream-buffers": "^3.0.2",
     "jest": "^19.0.2",
     "qs": "^6.4.0",
     "rimraf": "^2.6.1",
+    "stream-buffers": "^3.0.1",
     "ts-jest": "^19.0.10",
     "tslint": "^5.1.0",
     "typescript": "^2.2.2"
