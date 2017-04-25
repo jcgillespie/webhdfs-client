@@ -1,15 +1,15 @@
 import * as stream from 'stream';
 import { CoreOptions, RequestResponse } from 'request';
 import { RequestPromiseOptions, put, post } from 'request-promise-native';
-import { IRequestFactory } from './RequestFactory';
+import { RequestFactory } from './RequestFactory';
 import { WebHDFSClient, CreateFileOptions, OpenFileOptions } from './WebHDFSClient';
 import { FileStatusProperties, ContentSummary, Token, FileChecksum, BooleanResponse } from './WebHDFSTypes';
 import { Result, Outcome } from './Result';
 
 export class Client implements WebHDFSClient {
     private readonly jsonOpt: CoreOptions = { json: true };
-    private readonly req: IRequestFactory;
-    constructor(requestFactory: IRequestFactory) {
+    private readonly req: RequestFactory;
+    constructor(requestFactory: RequestFactory) {
         this.req = requestFactory;
     }
 

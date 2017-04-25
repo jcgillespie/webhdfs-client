@@ -4,7 +4,7 @@ import { get, put, post, del } from 'request-promise-native';
 import { stringify } from 'qs';
 import { ClientOptions, DefaultClientOptions } from './ClientOptions';
 
-export interface IRequestFactory {
+export interface RequestFactory {
     readonly BaseUri: string;
     readonly BaseParameters: {};
     readonly Options: ClientOptions;
@@ -17,7 +17,7 @@ export interface IRequestFactory {
     Put<TReturn>(reqParams: {}, config: CoreOptions, path?: string): Promise<TReturn>;
 }
 
-export class RequestFactory implements IRequestFactory {
+export class ReqFactory implements RequestFactory {
     public readonly BaseUri: string;
     public readonly BaseParameters: {};
     public readonly Options: ClientOptions;
@@ -39,7 +39,7 @@ export class RequestFactory implements IRequestFactory {
 
     constructor(options?: ClientOptions) {
         this.Options = { ...DefaultClientOptions, ...options };
-        this.BaseUri = RequestFactory.createBaseUri(this.Options);
+        this.BaseUri = ReqFactory.createBaseUri(this.Options);
         this.BaseParameters = {
             'user.name': this.Options.User
         };

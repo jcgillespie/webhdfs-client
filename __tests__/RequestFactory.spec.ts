@@ -1,10 +1,10 @@
 import { ClientOptions, DefaultClientOptions } from '../src/ClientOptions';
-import { RequestFactory, IRequestFactory } from '../src/RequestFactory';
+import { ReqFactory, RequestFactory } from '../src/RequestFactory';
 
 describe('Request factory', () => {
     describe('options parsing', () => {
         it('should use the default options if none are supplied', () => {
-            const factory: IRequestFactory = new RequestFactory();
+            const factory: RequestFactory = new ReqFactory();
             expect(factory.Options).toBeDefined();
             expect(factory.Options).toEqual(DefaultClientOptions);
         });
@@ -13,7 +13,7 @@ describe('Request factory', () => {
             const opts: ClientOptions = {
                 Port: 1234
             };
-            const factory: IRequestFactory = new RequestFactory(opts);
+            const factory: RequestFactory = new ReqFactory(opts);
             expect(factory.Options.Host).toEqual(DefaultClientOptions.Host);
             expect(factory.Options.Path).toEqual(DefaultClientOptions.Path);
             expect(factory.Options.Port).toEqual(opts.Port);
@@ -29,7 +29,7 @@ describe('Request factory', () => {
                 Protocol: 'https',
                 User: 'unit tester'
             };
-            const factory: IRequestFactory = new RequestFactory(opts);
+            const factory: RequestFactory = new ReqFactory(opts);
             expect(factory.Options.Host).toEqual(opts.Host);
             expect(factory.Options.Path).toEqual(opts.Path);
             expect(factory.Options.Port).toEqual(opts.Port);
@@ -45,7 +45,7 @@ describe('Request factory', () => {
                 Protocol: undefined,
                 User: undefined
             };
-            const factory: IRequestFactory = new RequestFactory(opts);
+            const factory: RequestFactory = new ReqFactory(opts);
             expect(factory.Options.Host).toBeUndefined();
             expect(factory.Options.Path).toBeUndefined();
             expect(factory.Options.Port).toBeUndefined();
@@ -57,7 +57,7 @@ describe('Request factory', () => {
             const opts: ClientOptions = {
                 Host: 'unit-test.org'
             };
-            const factory: IRequestFactory = new RequestFactory(opts);
+            const factory: RequestFactory = new ReqFactory(opts);
             expect(factory.Options.Host).toEqual(opts.Host);
         });
 
@@ -65,7 +65,7 @@ describe('Request factory', () => {
             const opts: ClientOptions = {
                 Path: 'unit/test/path/'
             };
-            const factory: IRequestFactory = new RequestFactory(opts);
+            const factory: RequestFactory = new ReqFactory(opts);
             expect(factory.Options.Path).toEqual(opts.Path);
         });
 
@@ -73,7 +73,7 @@ describe('Request factory', () => {
             const opts: ClientOptions = {
                 User: 'SuperAdminUser'
             };
-            const factory: IRequestFactory = new RequestFactory(opts);
+            const factory: RequestFactory = new ReqFactory(opts);
             expect(factory.Options.User).toEqual(opts.User);
         });
 
@@ -81,7 +81,7 @@ describe('Request factory', () => {
             const opts: ClientOptions = {
                 Protocol: 'webhdfs'
             };
-            const factory: IRequestFactory = new RequestFactory(opts);
+            const factory: RequestFactory = new ReqFactory(opts);
             expect(factory.Options.Protocol).toEqual(opts.Protocol);
         });
 
@@ -90,7 +90,7 @@ describe('Request factory', () => {
                 Path: '/test/trailing/slash'
             };
 
-            const factory = new RequestFactory(opts);
+            const factory = new ReqFactory(opts);
             let result = factory.BaseUri;
             expect(result[result.length - 1]).toBe('/');
         });
@@ -99,7 +99,7 @@ describe('Request factory', () => {
             const opts: ClientOptions = {
                 Path: '/test/leading/slash'
             };
-            const factory = new RequestFactory(opts);
+            const factory = new ReqFactory(opts);
             let result = factory.BaseUri;
             expect(result[0]).not.toBe('/');
         });
@@ -113,9 +113,9 @@ describe('Request factory', () => {
             Protocol: 'test',
             User: 'tester'
         };
-        let requestFactory: IRequestFactory;
+        let requestFactory: RequestFactory;
         beforeAll(() => {
-            requestFactory = new RequestFactory(opts);
+            requestFactory = new ReqFactory(opts);
         });
 
         it('should strip a leading slash from the path', () => {

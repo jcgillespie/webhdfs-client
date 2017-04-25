@@ -2,7 +2,7 @@
   "name": "webhdfs-client",
   "version": "0.0.1",
   "description": "A WebHDFS client library with Promise support. Written in TypeScript.",
-  "main": "/dist/index.js",
+  "main": "/output/dist/index.js",
   "scripts": {
     "clean": "rimraf ./output/",
     "pretest": "yarn run clean && yarn run lint && yarn run build",
@@ -39,5 +39,9 @@
   "dependencies": {
     "request": "^2.81.0",
     "request-promise-native": "^1.0.3"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/jcgillespie/webhdfs-client.git"
   }
 }
