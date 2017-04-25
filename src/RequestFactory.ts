@@ -1,6 +1,6 @@
 import * as stream from 'stream';
 import { CoreOptions, get as getRequest } from 'request';
-import { get, put } from 'request-promise-native';
+import { get, put, post, del } from 'request-promise-native';
 import { stringify } from 'qs';
 import { ClientOptions, DefaultClientOptions } from './ClientOptions';
 
@@ -9,12 +9,13 @@ export interface IRequestFactory {
     readonly BaseParameters: {};
     readonly Options: ClientOptions;
     BuildRequestUri(path?: string, params?: {}): string;
+    Delete<TReturn>(reqParams: {}, config: CoreOptions, path?: string): Promise<TReturn>;
     Get<TReturn>(reqParams: {}, config: CoreOptions, path?: string): Promise<TReturn>;
     GetOp<TReturn>(op: string, path?: string): Promise<TReturn>;
     GetStream(reqParams: {}, config: CoreOptions, path: string): stream.Stream;
+    Post<TReturn>(reqParams: {}, config: CoreOptions, path?: string): Promise<TReturn>;
     Put<TReturn>(reqParams: {}, config: CoreOptions, path?: string): Promise<TReturn>;
 }
-
 
 export class RequestFactory implements IRequestFactory {
     public readonly BaseUri: string;
@@ -56,6 +57,11 @@ export class RequestFactory implements IRequestFactory {
         return uri;
     }
 
+    public async Delete<TReturn>(reqParams: {}, config: CoreOptions, path?: string): Promise<TReturn> {
+        let uri: string = this.BuildRequestUri(path, reqParams);
+        return del(uri, config);
+    }
+
     public async Get<TReturn>(reqParams: {}, config: CoreOptions, path?: string): Promise<TReturn> {
         let uri: string = this.BuildRequestUri(path, reqParams);
         return get(uri, config);
@@ -70,6 +76,11 @@ export class RequestFactory implements IRequestFactory {
     public GetStream(reqParams: {}, config: CoreOptions, path: string): stream.Stream {
         let uri: string = this.BuildRequestUri(path, reqParams);
         return getRequest(uri, config);
+    }
+
+    public async Post<TReturn>(reqParams: {}, config: CoreOptions, path?: string): Promise<TReturn> {
+        let uri: string = this.BuildRequestUri(path, reqParams);
+        return post(uri, config);
     }
 
     public async Put<TReturn>(reqParams: {}, config: CoreOptions, path?: string): Promise<TReturn> {

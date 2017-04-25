@@ -1,15 +1,36 @@
 import * as stream from 'stream';
 import { CoreOptions, RequestResponse } from 'request';
-import { RequestPromiseOptions, put } from 'request-promise-native';
+import { RequestPromiseOptions, put, post } from 'request-promise-native';
 import { IRequestFactory } from './RequestFactory';
 import { WebHDFSClient, CreateFileOptions, OpenFileOptions } from './WebHDFSClient';
 import { FileStatusProperties, ContentSummary, Token, FileChecksum, BooleanResponse } from './WebHDFSTypes';
 import { Result, Outcome } from './Result';
 
 export class Client implements WebHDFSClient {
+    private readonly jsonOpt: CoreOptions = { json: true };
     private readonly req: IRequestFactory;
     constructor(requestFactory: IRequestFactory) {
         this.req = requestFactory;
+    }
+
+    public async Append(file: stream.Stream, path: string, bufferSize?: number): Promise<Outcome> {
+        const op: string = 'APPEND';
+        const locHeader: string = 'location';
+        const reqParams = { op, bufferSize };
+        const uri = this.req.BuildRequestUri(path, reqParams);
+
+        return this.wrapOutcome(async () => {
+            // two-part creation per docs
+            // reference: http://hadoop.apache.org/docs/current/hadoop-project-dist/hadoop-hdfs/WebHDFS.html#Append_to_a_File
+            let request1: RequestResponse = await post(uri, this.jsonOpt);
+            const dataUri = request1.headers[locHeader];
+
+            let request2 = post(dataUri, this.jsonOpt);
+            file.pipe(request2);
+
+            await request2;
+            return true;
+        });
     }
 
     public async CreateFile(
@@ -59,8 +80,24 @@ export class Client implements WebHDFSClient {
 
         let result = new Result<string>();
         result.Success = success;
-        result.Result = result.Success ? location : undefined;
+        result.Result = location;
         return result;
+    }
+
+    public async Delete(path: string, recursive: boolean = false): Promise<Outcome> {
+        const op: string = 'DELETE';
+        const reqParams = { op, recursive };
+        return this.wrapOutcome(async () => {
+            let raw = await this.req.Delete<BooleanResponse>(reqParams, this.jsonOpt, path);
+            return raw.boolean;
+        });
+    }
+
+    public async Exists(path: string): Promise<Outcome> {
+        return this.wrapOutcome(async () => {
+            let stat = await this.GetFileStatus(path);
+            return stat !== undefined && stat.Success;
+        });
     }
 
     public async GetContentSummary(path: string): Promise<Result<ContentSummary>> {
@@ -80,8 +117,8 @@ export class Client implements WebHDFSClient {
 
         const op: string = 'GETDELEGATIONTOKEN';
         let params = { op: op, renewer: renewer };
-        let config: CoreOptions = { json: true };
-        let raw = await this.req.Get<DelegationTokenResponse>(params, config);
+
+        let raw = await this.req.Get<DelegationTokenResponse>(params, this.jsonOpt);
         return this.createResult<DelegationTokenResponse, Token>(raw, r => r.Token);
     }
 
@@ -130,9 +167,10 @@ export class Client implements WebHDFSClient {
     public async MakeDirectory(path: string, permissionOctal?: string): Promise<Outcome> {
         const op: string = 'MKDIRS';
         let reqParams = { op, permission: permissionOctal };
-        let config: CoreOptions = { json: true };
-        let raw = await this.req.Put<BooleanResponse>(reqParams, config, path);
-        return this.createOutcome<BooleanResponse>(raw, r => r.boolean);
+        return this.wrapOutcome(async () => {
+            let raw = await this.req.Put<BooleanResponse>(reqParams, this.jsonOpt, path);
+            return raw.boolean;
+        });
     }
 
     public OpenFile(
@@ -154,6 +192,15 @@ export class Client implements WebHDFSClient {
         return this.req.GetStream(param, coreOptions, path);
     }
 
+    public async Rename(source: string, destination: string): Promise<Outcome> {
+        const op: string = 'RENAME';
+        let reqParam = { op, destination };
+        return this.wrapOutcome(async () => {
+            let raw = await this.req.Put<BooleanResponse>(reqParam, this.jsonOpt, source);
+            return raw.boolean;
+        });
+    }
+
     private createResult<TRaw, TOut>(raw: TRaw, selector: (input: TRaw) => TOut): Result<TOut> {
         let result: Result<TOut> = new Result<TOut>();
         let selection = selector(raw);
@@ -162,9 +209,13 @@ export class Client implements WebHDFSClient {
         return result;
     }
 
-    private createOutcome<TRaw>(raw: TRaw, isValid: (input: TRaw) => boolean): Outcome {
-        let result: Outcome = new Outcome();
-        result.Success = isValid(raw);
-        return result;
+    private async wrapOutcome(action: () => Promise<boolean>): Promise<Outcome> {
+        let outcome = new Outcome();
+        try {
+            outcome.Success = await action();
+        } catch (error) {
+            outcome.Success = false;
+        }
+        return outcome;
     }
 }

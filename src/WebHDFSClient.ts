@@ -17,11 +17,14 @@ export interface OpenFileOptions {
 }
 
 export interface WebHDFSClient {
+    Append(file: stream.Stream, path: string, bufferSize?: number): Promise<Outcome>;
     CreateFile(
         file: stream.Stream,
         path: string,
         options?: CreateFileOptions
     ): Promise<Result<string>>;
+    Delete(path: string, recursive?: boolean): Promise<Outcome>;
+    Exists(path: string): Promise<Outcome>;
     GetContentSummary(path: string): Promise<Result<ContentSummary>>;
     GetDelegationToken(renewer: string): Promise<Result<Token>>;
     GetFileChecksum(path: string): Promise<Result<FileChecksum>>;
@@ -33,4 +36,5 @@ export interface WebHDFSClient {
         path: string,
         options?: OpenFileOptions
     ): stream.Stream;
+    Rename(source: string, destination: string): Promise<Outcome>;
 }
