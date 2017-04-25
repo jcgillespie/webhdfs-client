@@ -13,15 +13,9 @@ describe('INTEGRATION', () => {
             Port: 50070,
             Path: 'webhdfs/v1/testing/'
         });
-        try {
-            await client.GetFileStatus(path);
-        } catch (e) {
-            expect(e).toBeInstanceOf(StatusCodeError);
-            expect(e).toHaveProperty('statusCode', 404);
-            return;
-        }
 
-        fail('exception wasn\'t thrown');
+        let result = await client.GetFileStatus(path);
+        expect(result.Success).toBe(false);
     });
 
     it('can create a directory', async () => {

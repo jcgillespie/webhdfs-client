@@ -106,8 +106,10 @@ export class Client implements WebHDFSClient {
         }
 
         const op: string = 'GETCONTENTSUMMARY';
-        let raw: ContentSummaryResponse = await this.req.GetOp<ContentSummaryResponse>(op, path);
-        return this.createResult<ContentSummaryResponse, ContentSummary>(raw, r => r.ContentSummary);
+        return this.wrapResult<ContentSummaryResponse, ContentSummary>(
+            r => r.ContentSummary,
+            async () => this.req.GetOp<ContentSummaryResponse>(op, path)
+        );
     }
 
     public async GetDelegationToken(renewer: string): Promise<Result<Token>> {
@@ -118,8 +120,10 @@ export class Client implements WebHDFSClient {
         const op: string = 'GETDELEGATIONTOKEN';
         let params = { op: op, renewer: renewer };
 
-        let raw = await this.req.Get<DelegationTokenResponse>(params, this.jsonOpt);
-        return this.createResult<DelegationTokenResponse, Token>(raw, r => r.Token);
+        return this.wrapResult<DelegationTokenResponse, Token>(
+            r => r.Token,
+            async () => this.req.Get<DelegationTokenResponse>(params, this.jsonOpt)
+        );
     }
 
     public async GetFileChecksum(path: string): Promise<Result<FileChecksum>> {
@@ -128,8 +132,10 @@ export class Client implements WebHDFSClient {
         }
 
         const op: string = 'GETFILECHECKSUM';
-        let raw = await this.req.GetOp<FileChecksumResponse>(op, path);
-        return this.createResult<FileChecksumResponse, FileChecksum>(raw, r => r.FileChecksum);
+        return this.wrapResult<FileChecksumResponse, FileChecksum>(
+            r => r.FileChecksum,
+            async () => this.req.GetOp<FileChecksumResponse>(op, path)
+        );
     }
 
     public async GetFileStatus(path: string): Promise<Result<FileStatusProperties>> {
@@ -138,8 +144,10 @@ export class Client implements WebHDFSClient {
         }
 
         const op: string = 'GETFILESTATUS';
-        let raw = await this.req.GetOp<FileStatus>(op, path);
-        return this.createResult<FileStatus, FileStatusProperties>(raw, r => r.FileStatus);
+        return this.wrapResult<FileStatus, FileStatusProperties>(
+            r => r.FileStatus,
+            async () => this.req.GetOp<FileStatus>(op, path)
+        );
     }
 
     public async GetHomeDirectory(): Promise<Result<string>> {
@@ -148,8 +156,11 @@ export class Client implements WebHDFSClient {
         }
 
         const op: string = 'GETHOMEDIRECTORY';
-        let raw: HomeDirectoryResponse = await this.req.GetOp<HomeDirectoryResponse>(op);
-        return this.createResult<HomeDirectoryResponse, string>(raw, r => r.Path);
+
+        return this.wrapResult<HomeDirectoryResponse, string>(
+            r => r.Path,
+            async () => this.req.GetOp<HomeDirectoryResponse>(op)
+        );
     }
 
     public async ListStatus(path: string): Promise<Result<FileStatusProperties[]>> {
@@ -160,8 +171,11 @@ export class Client implements WebHDFSClient {
         }
 
         const op: string = 'LISTSTATUS';
-        let raw: ListStatusResponse = await this.req.GetOp<ListStatusResponse>(op, path);
-        return this.createResult<ListStatusResponse, FileStatusProperties[]>(raw, r => r.FileStatuses.FileStatus);
+
+        return this.wrapResult<ListStatusResponse, FileStatusProperties[]>(
+            r => r.FileStatuses.FileStatus,
+            async () => this.req.GetOp<ListStatusResponse>(op, path)
+        );
     }
 
     public async MakeDirectory(path: string, permissionOctal?: string): Promise<Outcome> {
@@ -201,14 +215,6 @@ export class Client implements WebHDFSClient {
         });
     }
 
-    private createResult<TRaw, TOut>(raw: TRaw, selector: (input: TRaw) => TOut): Result<TOut> {
-        let result: Result<TOut> = new Result<TOut>();
-        let selection = selector(raw);
-        result.Success = raw !== undefined && selection !== undefined;
-        result.Result = selection;
-        return result;
-    }
-
     private async wrapOutcome(action: () => Promise<boolean>): Promise<Outcome> {
         let outcome = new Outcome();
         try {
@@ -217,5 +223,19 @@ export class Client implements WebHDFSClient {
             outcome.Success = false;
         }
         return outcome;
+    }
+
+    private async wrapResult<TRaw, TOut>(selector: (input: TRaw) => TOut, action: () => Promise<TRaw>): Promise<Result<TOut>> {
+        let result: Result<TOut> = new Result<TOut>();
+        try {
+            let raw = await action();
+            let selection = selector(raw);
+            result.Success = raw !== undefined && selection !== undefined;
+            result.Result = selection;
+        } catch (error) {
+            result.Success = false;
+        }
+
+        return result;
     }
 }
