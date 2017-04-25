@@ -1,5 +1,5 @@
-import { ClientOptions, DefaultClientOptions } from './ClientOptions';
-import { RequestFactory, IRequestFactory } from './RequestFactory';
+import { ClientOptions, DefaultClientOptions } from '../src/ClientOptions';
+import { RequestFactory, IRequestFactory } from '../src/RequestFactory';
 
 describe('Request factory', () => {
     it('should use the default options if none are supplied', () => {
