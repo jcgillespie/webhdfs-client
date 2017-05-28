@@ -1,7 +1,6 @@
 jest.disableAutomock();
 
 import * as sb from 'stream-buffers';
-import { StatusCodeError } from 'request-promise-native/errors';
 import { ClientFactory } from '../src/ClientFactory';
 import { WebHDFSClient } from '../src/WebHDFSClient';
 

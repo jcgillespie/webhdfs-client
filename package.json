@@ -23,22 +23,22 @@
   "author": "Josh Gillespie <josh.gillespie@polarissolutions.com>",
   "license": "ISC",
   "devDependencies": {
-    "@types/jest": "^19.2.2",
+    "@types/jest": "^19.2.3",
     "@types/qs": "^6.2.31",
-    "@types/request": "0.0.42",
-    "@types/request-promise-native": "^1.0.2",
+    "@types/request": "^0.0.43",
+    "@types/request-promise-native": "^1.0.5",
     "@types/stream-buffers": "^3.0.2",
-    "jest": "^19.0.2",
+    "jest": "^20.0.4",
     "qs": "^6.4.0",
     "rimraf": "^2.6.1",
     "stream-buffers": "^3.0.1",
-    "ts-jest": "^19.0.10",
-    "tslint": "^5.1.0",
-    "typescript": "^2.2.2"
+    "ts-jest": "^20.0.4",
+    "tslint": "^5.3.2",
+    "typescript": "^2.3.3"
   },
   "dependencies": {
     "request": "^2.81.0",
-    "request-promise-native": "^1.0.3"
+    "request-promise-native": "^1.0.4"
   },
   "repository": {
     "type": "git",
