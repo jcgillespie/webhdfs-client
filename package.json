@@ -8,6 +8,7 @@
     "pretest": "yarn run clean && yarn run lint && yarn run build",
     "test": "jest --coverage --no-cache --config ./config/jest.json",
     "test:nocover": "jest --config ./config/jest.json",
+    "test:debug": "jest --config ./config/jest.debug.json",
     "test:watch": "jest --watch --config ./config/jest.json",
     "build": "tsc -p ./config/tsconfig.json --pretty",
     "build:debug": "tsc -p ./config/tsconfig.debug.json --pretty",
@@ -23,18 +24,18 @@
   "author": "Josh Gillespie <josh.gillespie@polarissolutions.com>",
   "license": "ISC",
   "devDependencies": {
-    "@types/jest": "^19.2.3",
+    "@types/jest": "^20.0.0",
     "@types/qs": "^6.2.31",
-    "@types/request": "^0.0.43",
+    "@types/request": "^0.0.44",
     "@types/request-promise-native": "^1.0.5",
     "@types/stream-buffers": "^3.0.2",
     "jest": "^20.0.4",
     "qs": "^6.4.0",
     "rimraf": "^2.6.1",
     "stream-buffers": "^3.0.1",
-    "ts-jest": "^20.0.4",
-    "tslint": "^5.3.2",
-    "typescript": "^2.3.3"
+    "ts-jest": "^20.0.6",
+    "tslint": "^5.4.3",
+    "typescript": "^2.3.4"
   },
   "dependencies": {
     "request": "^2.81.0",
