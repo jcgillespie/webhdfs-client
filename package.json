@@ -8,7 +8,6 @@
     "pretest": "yarn run clean && yarn run lint && yarn run build",
     "test": "jest --coverage --no-cache --config ./config/jest.json",
     "test:nocover": "jest --config ./config/jest.json",
-    "test:debug": "jest --config ./config/jest.debug.json",
     "test:watch": "jest --watch --config ./config/jest.json",
     "build": "tsc -p ./config/tsconfig.json --pretty",
     "build:debug": "tsc -p ./config/tsconfig.debug.json --pretty",

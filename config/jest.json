@@ -1,12 +1,17 @@
 {
   "globals": {
-    "__TS_CONFIG__": "./config/tsconfig.json"
+    "__TS_CONFIG__": "config/tsconfig.json"
   },
   "rootDir": "../",
   "transform": {
     ".(ts|tsx)": "<rootDir>/node_modules/ts-jest/preprocessor.js"
   },
-  "testRegex": "(/__tests__/.*|\\.(test|spec))\\.(ts|tsx|js)$",
+  "testRegex": "(/__tests__/.*|\\.(test|spec))\\.(ts|tsx)$",
+  "testPathIgnorePatterns": [
+    "/node_modules/",
+    ".*\\.d\\.ts$",
+    "/output/"
+  ],
   "moduleFileExtensions": [
     "ts",
     "js"
@@ -17,6 +22,5 @@
     "!src/**/*.spec.ts",
     "!src/**/*.d.ts"
   ],
-  "coverageReporters": ["html", "cobertura", "text"],
-  "mapCoverage": true
+  "coverageReporters": ["html", "cobertura", "text"]
 }
