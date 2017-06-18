@@ -61,4 +61,95 @@ describe('INTEGRATION', () => {
             done();
         }
     });
+
+    it('can make a directory', async () => {
+        const hdfsDir = 'integration/mkdir/';
+        const client: WebHDFSClient = ClientFactory.Create({
+            Host: 'localhost',
+            Port: 50070,
+            Path: 'webhdfs/v1/testing/',
+            User: 'root'
+        });
+
+        let outcome = await client.MakeDirectory(hdfsDir);
+
+        expect(outcome.Success).toBe(true);
+    });
+
+    describe('Delete functionality', () => {
+        beforeAll(async () => {
+            const hdfsDir = 'integration/delete/';
+            const client: WebHDFSClient = ClientFactory.Create({
+                Host: 'localhost',
+                Port: 50070,
+                Path: 'webhdfs/v1/testing/',
+                User: 'root'
+            });
+            let dirExists = await client.Exists(hdfsDir);
+            if (dirExists.Success) {
+                let outcome = await client.Delete(hdfsDir, true);
+                expect(outcome.Success).toBe(true);
+            }
+        });
+
+        it('can delete an empty directory', async () => {
+            const hdfsDir = 'integration/delete/deldir/';
+            const client: WebHDFSClient = ClientFactory.Create({
+                Host: 'localhost',
+                Port: 50070,
+                Path: 'webhdfs/v1/testing/',
+                User: 'root'
+            });
+
+            let setup = await client.MakeDirectory(hdfsDir);
+            expect(setup.Success).toBe(true);
+
+            let outcome = await client.Delete(hdfsDir);
+            expect(outcome.Success).toBe(true);
+        });
+
+        it('cannot delete a directory with children without recursive flag', async () => {
+            const hdfsDir = 'integration/delete/deldirNoRecurse/';
+            const client: WebHDFSClient = ClientFactory.Create({
+                Host: 'localhost',
+                Port: 50070,
+                Path: 'webhdfs/v1/testing/',
+                User: 'root'
+            });
+
+            let setup = await client.MakeDirectory(hdfsDir);
+            expect(setup.Success).toBe(true);
+            const content: string = 'integration test!';
+            let inputStream = new sb.ReadableStreamBuffer();
+            inputStream.put(content);
+            inputStream.stop();
+            let child = await client.CreateFile(inputStream, hdfsDir + 'test.txt', { Overwrite: true });
+            expect(child.Success).toBe(true);
+
+            let outcome = await client.Delete(hdfsDir);
+            expect(outcome.Success).toBe(false);
+        });
+
+        it('cannot delete a directory with children if recursive flag is specified', async () => {
+            const hdfsDir = 'integration/delete/deldirRecurse/';
+            const client: WebHDFSClient = ClientFactory.Create({
+                Host: 'localhost',
+                Port: 50070,
+                Path: 'webhdfs/v1/testing/',
+                User: 'root'
+            });
+
+            let setup = await client.MakeDirectory(hdfsDir);
+            expect(setup.Success).toBe(true);
+            const content: string = 'integration test!';
+            let inputStream = new sb.ReadableStreamBuffer();
+            inputStream.put(content);
+            inputStream.stop();
+            let child = await client.CreateFile(inputStream, hdfsDir + 'test.txt', { Overwrite: true });
+            expect(child.Success).toBe(true);
+
+            let outcome = await client.Delete(hdfsDir, true);
+            expect(outcome.Success).toBe(true);
+        });
+    });
 });
