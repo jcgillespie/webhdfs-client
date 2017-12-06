@@ -12,7 +12,7 @@
     "build": "tsc -p ./config/tsconfig.json --pretty",
     "build:debug": "tsc -p ./config/tsconfig.debug.json --pretty",
     "build:prod": "tsc -p ./config/tsconfig.release.json --pretty",
-    "lint": "tslint -t stylish -c ./config/tslint.json --type-check -p ./config/tsconfig.json"
+    "lint": "tslint --format stylish --config ./config/tslint.json  --project ./config/tsconfig.json"
   },
   "keywords": [
     "hadoop",
@@ -23,22 +23,22 @@
   "author": "Josh Gillespie <josh.gillespie@polarissolutions.com>",
   "license": "ISC",
   "devDependencies": {
-    "@types/jest": "^20.0.0",
-    "@types/qs": "^6.2.31",
-    "@types/request": "^0.0.44",
-    "@types/request-promise-native": "^1.0.5",
+    "@types/jest": "^21.1.8",
+    "@types/qs": "^6.5.1",
+    "@types/request": "^2.0.8",
+    "@types/request-promise-native": "^1.0.10",
     "@types/stream-buffers": "^3.0.2",
-    "jest": "^20.0.4",
-    "qs": "^6.4.0",
-    "rimraf": "^2.6.1",
+    "jest": "^21.2.1",
+    "qs": "^6.5.1",
+    "rimraf": "^2.6.2",
     "stream-buffers": "^3.0.1",
-    "ts-jest": "^20.0.6",
-    "tslint": "^5.4.3",
-    "typescript": "^2.3.4"
+    "ts-jest": "^21.2.4",
+    "tslint": "^5.8.0",
+    "typescript": "^2.6.2"
   },
   "dependencies": {
-    "request": "^2.81.0",
-    "request-promise-native": "^1.0.4"
+    "request": "^2.83.0",
+    "request-promise-native": "^1.0.5"
   },
   "repository": {
     "type": "git",
