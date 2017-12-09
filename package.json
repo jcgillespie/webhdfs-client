@@ -1,6 +1,6 @@
 {
-  "name": "webhdfs-client",
-  "version": "0.0.1",
+  "name": "@polarissolutions/webhdfs-client",
+  "version": "0.0.2",
   "description": "A WebHDFS client library with Promise support. Written in TypeScript.",
   "main": "/output/dist/index.js",
   "scripts": {
@@ -21,7 +21,7 @@
     "rest"
   ],
   "author": "Josh Gillespie <josh.gillespie@polarissolutions.com>",
-  "license": "ISC",
+  "license": "MIT",
   "devDependencies": {
     "@types/jest": "^21.1.8",
     "@types/qs": "^6.5.1",
@@ -42,6 +42,6 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/jcgillespie/webhdfs-client.git"
+    "url": "https://github.com/polarissolutions/webhdfs-client.git"
   }
 }
